@@ -127,7 +127,7 @@ func (fw *FileWatcher) Stop() (err error) {
 	return
 }
 
-// Add add a file to watch on specified operation op occured
+// Add add a file to watch on specified operation op occurred
 func (fw *FileWatcher) Add(path string, op Op, callback func(string, Op)) error {
 	path = filepath.Clean(path)
 	fsn := fw.fsnotify
@@ -288,7 +288,7 @@ func (fw *FileWatcher) sendEvent(event *fsnotify.Event) {
 	}
 
 	// some editor use create->rename to save file,
-	// this cloud raise 2 OpWrite event continously,
+	// this cloud raise 2 OpWrite event continuously,
 	// delay 1s for prevent duplicated event
 	due := fe.Time.Add(fw.Delay)
 	now := time.Now()
