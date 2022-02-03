@@ -3,6 +3,7 @@ package fswatch
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -64,7 +65,7 @@ func assertTestFiles(t *testing.T, testdir string, files map[string]Op) {
 }
 
 func TestWatchDirOnly(t *testing.T) {
-	testdir := "TestWatchDirOnly"
+	testdir := "TestWatchDirOnly-" + strconv.Itoa(rand.Int())
 
 	os.RemoveAll(testdir)
 	defer os.RemoveAll(testdir)
@@ -115,7 +116,7 @@ func TestWatchDirOnly(t *testing.T) {
 }
 
 func TestWatchRecursive(t *testing.T) {
-	testdir := "TestWatchRecursive"
+	testdir := "TestWatchRecursive-" + strconv.Itoa(rand.Int())
 
 	os.RemoveAll(testdir)
 	defer os.RemoveAll(testdir)
@@ -158,7 +159,7 @@ func TestWatchRecursive(t *testing.T) {
 }
 
 func TestWatchAgain(t *testing.T) {
-	testdir := "TestWatchAgain"
+	testdir := "TestWatchAgain-" + strconv.Itoa(rand.Int())
 
 	os.RemoveAll(testdir)
 	defer os.RemoveAll(testdir)
