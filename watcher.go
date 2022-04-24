@@ -84,7 +84,7 @@ func (fw *FileWatcher) Start() (err error) {
 	}
 
 	if fw.Logger != nil {
-		fw.Logger.Info("Start watching")
+		fw.Logger.Info("fswatch: Start")
 	}
 
 	fw.fsnotify, err = fsnotify.NewWatcher()
@@ -99,7 +99,7 @@ func (fw *FileWatcher) Start() (err error) {
 			}
 		} else {
 			if fw.Logger != nil {
-				fw.Logger.Debug("Watch: ", path)
+				fw.Logger.Debugf("fswatch: watch file %q", path)
 			}
 			err = fw.fsnotify.Add(path)
 			if err != nil {
@@ -119,7 +119,7 @@ func (fw *FileWatcher) Stop() (err error) {
 	}
 
 	if fw.Logger != nil {
-		fw.Logger.Info("Stop watching")
+		fw.Logger.Info("fswatch: Stop")
 	}
 
 	err = fw.fsnotify.Close()
@@ -133,7 +133,7 @@ func (fw *FileWatcher) Add(path string, op Op, callback func(string, Op)) error 
 	fsn := fw.fsnotify
 	if fsn != nil {
 		if fw.Logger != nil {
-			fw.Logger.Debug("Watch: ", path)
+			fw.Logger.Debugf("fswatch: Add file %q ", path)
 		}
 		err := fsn.Add(path)
 		if err != nil {
@@ -150,7 +150,7 @@ func (fw *FileWatcher) Remove(path string) error {
 	fsn := fw.fsnotify
 	if fsn != nil {
 		if fw.Logger != nil {
-			fw.Logger.Debug("Remove: ", path)
+			fw.Logger.Debugf("fswatch: Remove file %q", path)
 		}
 		err := fsn.Remove(path)
 		if err != nil {
@@ -198,14 +198,14 @@ func (fw *FileWatcher) doRecursive(root string, watch bool) error {
 		if fi.IsDir() {
 			if watch {
 				if fw.Logger != nil {
-					fw.Logger.Debug("Watch: ", path)
+					fw.Logger.Debugf("fswatch: Add dir %q", path)
 				}
 				if err = fsn.Add(path); err != nil {
 					return err
 				}
 			} else {
 				if fw.Logger != nil {
-					fw.Logger.Debug("Remove: ", path)
+					fw.Logger.Debugf("fswatch: Remove dir %q", path)
 				}
 				if err = fsn.Remove(path); err != nil {
 					return err
@@ -219,7 +219,7 @@ func (fw *FileWatcher) doRecursive(root string, watch bool) error {
 
 func (fw *FileWatcher) delayCallbacks(fe *fileevent) {
 	if fw.Logger != nil {
-		fw.Logger.Infof("fswatch delay callback %q [%v]", fe.Name, fe.Op)
+		fw.Logger.Infof("fswatch: delay callback %q [%v]", fe.Name, fe.Op)
 	}
 	time.Sleep(fw.Delay)
 
@@ -261,7 +261,7 @@ func (fw *FileWatcher) procEvent(evt *fsnotify.Event) {
 		if err := iox.DirExists(evt.Name); err == nil {
 			if fw.isRecursive(evt.Name) {
 				if err = fw.doRecursive(evt.Name, true); err != nil && fw.Logger != nil {
-					fw.Logger.Errorf("fswatch add %q error: %v", evt.Name, err)
+					fw.Logger.Errorf("fswatch: add %q error: %v", evt.Name, err)
 				}
 			}
 		}
@@ -270,7 +270,7 @@ func (fw *FileWatcher) procEvent(evt *fsnotify.Event) {
 	fsn := fw.fsnotify
 	if evt.Op&OpRemove != 0 && fsn != nil {
 		if err := fsn.Remove(evt.Name); err != nil && fw.Logger != nil {
-			fw.Logger.Errorf("fswatch remove %q error: %v", evt.Name, err)
+			fw.Logger.Errorf("fswatch: remove %q error: %v", evt.Name, err)
 		}
 	}
 }
@@ -326,7 +326,7 @@ func (fw *FileWatcher) watch() {
 				return
 			}
 			if fw.Logger != nil {
-				fw.Logger.Error("fswatch ", err)
+				fw.Logger.Errorf("fswatch: watch error: %v", err)
 			}
 		}
 	}
